@@ -15,6 +15,7 @@ def main():
 
     lf = pl.scan_csv(args.input_file)
     df = lf.collect()
+    print(df.describe())
 
     x = df.select(["so", "s2", "o2", "eps"])
 
