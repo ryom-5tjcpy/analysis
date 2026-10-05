@@ -32,7 +32,7 @@ def main():
     lf = df.lazy()
 
     fig = px.scatter_3d(
-        lf.filter(pl.col("eps") > 10).collect(),
+        lf.filter(pl.col("eps") > 1).collect(),
         x='i',
         y='j',
         z='k',
