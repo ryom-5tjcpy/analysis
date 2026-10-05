@@ -26,8 +26,6 @@ def main():
     model.fit(df_scaled)
 
     df = df.with_columns(pl.Series("cluster", model.labels_))
-    csv_output_file = f"clustered_{args.algorithm}_{str.replace(args.input_file, '.csv', '')}_{args.n_clusters}"
-    df.write_csv(csv_output_file)
 
     fig = px.scatter_3d(
         df,
