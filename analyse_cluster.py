@@ -1,7 +1,6 @@
 import argparse
 import plotly.express as px
 import polars as pl
-from polars import col
 from sklearn.cluster import KMeans, SpectralClustering
 from sklearn.preprocessing import StandardScaler
 
