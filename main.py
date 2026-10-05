@@ -42,6 +42,7 @@ def main():
     )
     fig.update_layout(
         scene=dict(
+            aspectmode='cube',
             xaxis=dict(range=[0, args.grid_size], autorange=False),
             yaxis=dict(range=[0, args.grid_size], autorange=False),
             zaxis=dict(range=[0, args.grid_size], autorange=False),
