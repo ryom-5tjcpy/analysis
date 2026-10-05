@@ -11,6 +11,7 @@ def main():
     parser.add_argument("--input_file", type=str, default="coarsened.csv")
     parser.add_argument("--algorithm", type=str, default="kmeans", choices=["kmeans", "spectral"])
     parser.add_argument("--grid_size", type=int, default=64)
+    parser.add_argument("--threshold", type=float, default=1.0)
     args = parser.parse_args()
 
     lf = pl.scan_csv(args.input_file)
@@ -28,11 +29,16 @@ def main():
         model = SpectralClustering(n_clusters=args.n_clusters, random_state=42)
     model.fit(x_scaled)
 
-    df = df.with_columns(pl.Series("cluster", model.labels_))
-    lf = df.lazy()
+    lf_clustered = df.with_columns(pl.Series("cluster", model.labels_)).lazy()
+
+    for c in range(args.n_clusters):
+        print("-" * 50)
+        print(f"Cluster {c}")
+        df_clustered = lf_clustered.filter(pl.col("cluster") == c).select(["so", "s2", "o2", "eps"]).collect()
+        print(df_clustered.describe())
 
     fig = px.scatter_3d(
-        lf.filter(pl.col("eps") > 1).collect(),
+        lf_clustered.filter(pl.col("eps") > args.threshold).collect(),
         x='i',
         y='j',
         z='k',
