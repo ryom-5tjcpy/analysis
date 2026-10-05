@@ -16,14 +16,16 @@ def main():
     lf = pl.scan_csv(args.input_file)
     df = lf.collect()
 
+    x = df.select(["so", "s2", "o2", "eps"])
+
     scaler = StandardScaler()
-    df_scaled = scaler.fit_transform(df)
+    x_scaled = scaler.fit_transform(x)
 
     if args.algorithm == "kmeans":
         model = KMeans(n_clusters=args.n_clusters, random_state=42)
     elif args.algorithm == "spectral":
         model = SpectralClustering(n_clusters=args.n_clusters, random_state=42)
-    model.fit(df_scaled)
+    model.fit(x_scaled)
 
     df = df.with_columns(pl.Series("cluster", model.labels_))
 
