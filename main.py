@@ -15,7 +15,7 @@ def main():
 
     lf = pl.scan_csv(args.input_file)
     df = lf.collect()
-    print(df.describe())
+    print(df.select(["so", "s2", "o2", "eps"]).describe())
 
     x = df.select(["so", "s2", "o2", "eps"])
 
@@ -29,9 +29,10 @@ def main():
     model.fit(x_scaled)
 
     df = df.with_columns(pl.Series("cluster", model.labels_))
+    lf = df.lazy()
 
     fig = px.scatter_3d(
-        df,
+        lf.filter(pl.col("eps") > 10).collect(),
         x='i',
         y='j',
         z='k',
