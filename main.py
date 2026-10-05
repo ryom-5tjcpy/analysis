@@ -35,7 +35,8 @@ def main():
         y='j',
         z='k',
         color='eps',
-        symbol='cluster'
+        symbol='cluster',
+        range_color=[0, 30]
     )
     fig.update_layout(
         scene=dict(
@@ -52,6 +53,7 @@ def main():
             title_text='Cluster'
         )
     )
+    fig.update_traces(marker=dict(cmin=0, cmax=30))
 
     html_output_file = f"clustered_{args.algorithm}_{str.replace(args.input_file, '.csv', '')}_{args.n_clusters}.html"
     fig.write_html(html_output_file)
