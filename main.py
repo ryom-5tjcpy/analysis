@@ -10,6 +10,7 @@ def main():
     parser.add_argument("--n_clusters", type=int, default=6)
     parser.add_argument("--input_file", type=str, default="coarsened.csv")
     parser.add_argument("--algorithm", type=str, default="kmeans", choices=["kmeans", "spectral"])
+    parser.add_argument("--grid_size", type=int, default=64)
     args = parser.parse_args()
 
     lf = pl.scan_csv(args.input_file)
@@ -35,6 +36,11 @@ def main():
         symbol='cluster'
     )
     fig.update_layout(
+        scene=dict(
+            xaxis=dict(range=[0, args.grid_size], autorange=False),
+            yaxis=dict(range=[0, args.grid_size], autorange=False),
+            zaxis=dict(range=[0, args.grid_size], autorange=False),
+        ),
         legend=dict(
             orientation='h',
             yanchor='bottom',
