@@ -1,4 +1,5 @@
 import argparse
+import plotly.express as px
 import polars as pl
 from polars import col
 from sklearn.cluster import KMeans, SpectralClustering
@@ -13,7 +14,7 @@ def main():
     args = parser.parse_args()
 
     lf = pl.scan_csv(args.input_file)
-    df = lf.select([col("so"), col("s2"), col("o2"), col("eps")]).collect()
+    df = lf.collect()
 
     scaler = StandardScaler()
     df_scaled = scaler.fit_transform(df)
@@ -25,8 +26,30 @@ def main():
     model.fit(df_scaled)
 
     df = df.with_columns(pl.Series("cluster", model.labels_))
-    output_file = f"clustered_{args.algorithm}_{str.replace(args.input_file, '.csv', '')}_{args.n_clusters}"
-    df.write_csv(output_file)
+    csv_output_file = f"clustered_{args.algorithm}_{str.replace(args.input_file, '.csv', '')}_{args.n_clusters}"
+    df.write_csv(csv_output_file)
+
+    fig = px.scatter_3d(
+        df,
+        x='i',
+        y='j',
+        z='k',
+        color='eps',
+        symbol='cluster'
+    )
+    fig.update_layout(
+        legend=dict(
+            orientation='h',
+            yanchor='bottom',
+            y=1.02,
+            xanchor='center',
+            x=0.5,
+            title_text='Cluster'
+        )
+    )
+
+    html_output_file = f"clustered_{args.algorithm}_{str.replace(args.input_file, '.csv', '')}_{args.n_clusters}.html"
+    fig.write_html(html_output_file)
 
 
 if __name__ == "__main__":
