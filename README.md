@@ -46,6 +46,7 @@ uv run python main.py --input_file data.csv --n_clusters 4 --algorithm spectral
 | `--n_clusters` | `6` | クラスタ数 |
 | `--algorithm` | `kmeans` | クラスタリング手法。`kmeans` または `spectral` |
 | `--grid_size` | `64` | 3次元グラフの各軸の表示範囲（0から指定値まで） |
+| `--threshold` | `1.0` | 散布図に表示する散逸率の閾値 |
 
 利用可能な引数は次のコマンドでも確認できます。
 
