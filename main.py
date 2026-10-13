@@ -84,18 +84,18 @@ def main():
 
     fig2 = px.scatter_3d(
         df,
-        x="so",
-        y="s2",
-        z="o2",
+        x="s2",
+        y="o2",
+        z="so",
         color="eps",
         symbol="cluster",
         range_color=padded_range(df["eps"])
     )
     fig2.update_layout(
         scene=dict(
-            xaxis=dict(range=padded_range(df["so"], padding=0.1)),
-            yaxis=dict(range=padded_range(df["s2"], padding=0.1)),
-            zaxis=dict(range=padded_range(df["o2"], padding=0.1)),
+            xaxis=dict(type='log', autorange=False),
+            yaxis=dict(type='log', autorange=False),
+            zaxis=dict(type='log', autorange=False),
         ),
         legend=dict(
             orientation='h',
