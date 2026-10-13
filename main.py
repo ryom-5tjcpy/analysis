@@ -93,9 +93,9 @@ def main():
     )
     fig2.update_layout(
         scene=dict(
-            xaxis=dict(type='log', autorange=False),
-            yaxis=dict(type='log', autorange=False),
-            zaxis=dict(type='log', autorange=False),
+            xaxis=dict(type='log'),
+            yaxis=dict(type='log'),
+            zaxis=dict(type='log'),
         ),
         legend=dict(
             orientation='h',
