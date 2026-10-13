@@ -74,7 +74,6 @@ def main():
             title_text='Cluster'
         )
     )
-    fig.update_traces(marker=dict(cmin=0, cmax=30))
 
     name = str.replace(args.input_file, '.csv', '')
 
