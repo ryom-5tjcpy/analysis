@@ -40,11 +40,11 @@ def main():
     for c in range(args.n_clusters):
         print("-" * 50)
         print(f"Cluster {c}")
-        df_clustered = lf_clustered.filter(pl.col("cluster") == c).select(["i", "j", "k"]).collect()
-        print(df_clustered.describe())
-        if df_clustered.count() <= 10:
+        df_clustered = lf_clustered.filter(pl.col("cluster") == c).collect()
+        print(df_clustered.select(["so", "s2", "o2", "eps"]).describe())
+        if df_clustered.height <= 10:
             print(f"\nCluster {c} has 10 or fewer points.")
-            for row in df_clustered.iter_rows():
+            for row in df_clustered.select(["i", "j", "k"]).iter_rows():
                 print(row)
 
     df_filtered = lf_clustered.filter(pl.col("eps") > args.threshold).collect()
