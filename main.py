@@ -31,20 +31,32 @@ def main():
 
     lf_clustered = df.with_columns(pl.Series("cluster", model.labels_)).lazy()
 
+    def padded_range(series: pl.Series, padding: float = 0) -> list:
+        min_val = series.min()
+        max_val = series.max()
+        range_val = max_val - min_val
+        return [min_val - padding * range_val, max_val + padding * range_val]
+
     for c in range(args.n_clusters):
         print("-" * 50)
         print(f"Cluster {c}")
-        df_clustered = lf_clustered.filter(pl.col("cluster") == c).select(["so", "s2", "o2", "eps"]).collect()
+        df_clustered = lf_clustered.filter(pl.col("cluster") == c).select(["i", "j", "k"]).collect()
         print(df_clustered.describe())
+        if df_clustered.count() <= 10:
+            print(f"\nCluster {c} has 10 or fewer points.")
+            for row in df_clustered.iter_rows():
+                print(row)
+
+    df_filtered = lf_clustered.filter(pl.col("eps") > args.threshold).collect()
 
     fig = px.scatter_3d(
-        lf_clustered.filter(pl.col("eps") > args.threshold).collect(),
+        df_filtered,
         x='i',
         y='j',
         z='k',
         color='eps',
         symbol='cluster',
-        range_color=[0, 30]
+        range_color=padded_range(df_filtered["eps"])
     )
     fig.update_layout(
         scene=dict(
@@ -64,8 +76,40 @@ def main():
     )
     fig.update_traces(marker=dict(cmin=0, cmax=30))
 
-    html_output_file = f"clustered_{args.algorithm}_{str.replace(args.input_file, '.csv', '')}_{args.n_clusters}.html"
+    name = str.replace(args.input_file, '.csv', '')
+
+    html_output_file = f"clustered_{args.algorithm}_{name}_{args.n_clusters}.html"
     fig.write_html(html_output_file)
+
+    df = lf_clustered.collect()
+
+    fig2 = px.scatter_3d(
+        df,
+        x="so",
+        y="s2",
+        z="o2",
+        color="eps",
+        symbol="cluster",
+        range_color=padded_range(df["eps"])
+    )
+    fig2.update_layout(
+        scene=dict(
+            xaxis=dict(range=padded_range(df["so"], padding=0.1)),
+            yaxis=dict(range=padded_range(df["s2"], padding=0.1)),
+            zaxis=dict(range=padded_range(df["o2"], padding=0.1)),
+        ),
+        legend=dict(
+            orientation='h',
+            yanchor='bottom',
+            y=1.02,
+            xanchor='center',
+            x=0.5,
+            title_text='Cluster'
+        )
+    )
+
+    html_output_file = f"clustered_{args.algorithm}_{name}_{args.n_clusters}_2.html"
+    fig2.write_html(html_output_file)
 
 
 if __name__ == "__main__":
