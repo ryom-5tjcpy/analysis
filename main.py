@@ -26,16 +26,10 @@ def main():
     if args.algorithm == "kmeans":
         model = KMeans(n_clusters=args.n_clusters, random_state=42)
     elif args.algorithm == "spectral":
-        model = SpectralClustering(n_clusters=args.n_clusters, random_state=42)
+        model = SpectralClustering(n_clusters=args.n_clusters, random_state=42, affinity='nearest_neighbors')
     model.fit(x_scaled)
 
     lf_clustered = df.with_columns(pl.Series("cluster", model.labels_)).lazy()
-
-    def padded_range(series: pl.Series, padding: float = 0) -> list:
-        min_val = series.min()
-        max_val = series.max()
-        range_val = max_val - min_val
-        return [min_val - padding * range_val, max_val + padding * range_val]
 
     for c in range(args.n_clusters):
         print("-" * 50)
@@ -56,7 +50,6 @@ def main():
         z='k',
         color='eps',
         symbol='cluster',
-        range_color=padded_range(df_filtered["eps"])
     )
     fig.update_layout(
         scene=dict(
@@ -86,10 +79,8 @@ def main():
         df,
         x="s2",
         y="o2",
-        z="so",
-        color="eps",
-        symbol="cluster",
-        range_color=padded_range(df["eps"])
+        z="eps",
+        color="cluster",
     )
     fig2.update_layout(
         scene=dict(
