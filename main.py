@@ -18,7 +18,7 @@ def main():
     df = lf.collect()
     print(df.select(["so", "s2", "o2", "eps"]).describe())
 
-    x = df.select(["so", "s2", "o2", "eps"])
+    x = df.select(["so", "s2", "eps"])
 
     scaler = StandardScaler()
     x_scaled = scaler.fit_transform(x)
