@@ -76,7 +76,7 @@ def main():
     df = lf_clustered.collect()
 
     fig2 = px.scatter_3d(
-        df,
+        df.with_columns(pl.col("cluster").cast(pl.String)),
         x="s2",
         y="o2",
         z="eps",
@@ -94,7 +94,9 @@ def main():
             y=1.02,
             xanchor='center',
             x=0.5,
-            title_text='Cluster'
+            title_text='Cluster',
+            itemclick='toggle',
+            itemdoubleclick='toggleothers',
         )
     )
 
